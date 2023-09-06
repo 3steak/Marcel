@@ -1,3 +1,4 @@
+from elevenlabslib import ElevenLabsUser
 import gradio as gr
 import openai
 import winsound
@@ -9,10 +10,11 @@ import config
 
 openai.api_key = config.OPENAI_API_KEY
 api_key = config.ELEVENLABS_API_KEY
-from elevenlabslib import ElevenLabsUser
 user = ElevenLabsUser(api_key)
 
-messages = ["You are an advisor. Please respond to all input in 50 words or less."]
+messages = [
+    "You are an advisor. Please respond to all input in 50 words or less."]
+
 
 def transcribe(audio):
     global messages
@@ -34,7 +36,7 @@ def transcribe(audio):
     system_message = response["choices"][0]["text"]
     messages.append(f"{system_message}")
 
-    voice = user.get_voices_by_name("Antoni")[0]
+    voice = user.get_voices_by_name("Adam")[0]
     audio = voice.generate_audio_bytes(system_message)
 
     audio = AudioSegment.from_file(io.BytesIO(audio), format="mp3")
@@ -45,12 +47,14 @@ def transcribe(audio):
     chat_transcript = "\n".join(messages)
     return chat_transcript
 
+
 iface = gr.Interface(
     fn=transcribe,
-    inputs=gr.Audio(source="microphone", type="filepath", placeholder="Please start speaking..."),
+    inputs=gr.Audio(source="microphone", type="filepath",
+                    placeholder="Commencez à parler..."),
     outputs="text",
-    title="🤖 My Desktop ChatGPT Assistant 🤖",
-    description="🌟 Please ask me your question and I will respond both verbally and in text to you...",
+    title="😜 Marcel, l'Assistant Impertinent 😜",
+    description="💬 Posez une question, et Marcel vous donnera une réponse impertinente !",
 )
 
 iface.launch()
